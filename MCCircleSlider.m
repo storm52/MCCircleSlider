@@ -11,13 +11,20 @@
 #define ToRad(deg) 		( (M_PI * (deg)) / 180.0 )
 #define ToDeg(rad)		( (180.0 * (rad)) / M_PI )
 #define SQR(x)			( (x) * (x) )
+#define PI_Degree 180.0
 
 @interface MCCircleSlider ()
 @property(nonatomic,readonly)CGPoint center;
 @end
 
 @implementation MCCircleSlider
+
+@synthesize lineWidth=_lineWidth;
 -(instancetype)initWithFrame:(CGRect)frame{
+//    if (CGRectGetHeight(frame)!=CGRectGetWidth(frame)) {
+//        frame.size.width=(MAX(frame.size.width, frame.size.height));
+//        frame.size.height=frame.size.width;
+//    }
     if (self=[super initWithFrame:frame]) {
         self.backgroundColor=[UIColor clearColor];
     }
@@ -40,6 +47,13 @@
     }
     return _lineWidth;
 }
+-(void)setLineWidth:(CGFloat)lineWidth{
+    if (lineWidth>self.bounds.size.width*0.5) {
+        lineWidth=self.bounds.size.width*0.5;
+    }
+    _lineWidth=lineWidth;
+
+}
 -(double)max{
     if (!_max>0) {
         _max=1;
@@ -47,15 +61,19 @@
     return _max;
 }
 -(double)currentValue{
-   float currentValue=ToDeg(self.endAngle-self.startAngle);
-    if (currentValue==0) {
+   float changedDeg=ToDeg(self.endAngle-self.startAngle);
+    if (changedDeg==0) {
         return self.min;
     }
-    if (currentValue<0) {
-        currentValue+=180*2;
+    if (changedDeg<0) {
+        changedDeg+=PI_Degree*2;
     }
    
-   return (currentValue/360)/(self.max-self.min);
+   return (changedDeg/(PI_Degree*2))*(self.max-self.min);
+}
+-(void)setCurrentValue:(double)currentValue{
+    float changedDeg=(currentValue/(self.max-self.min))*(PI_Degree*2);
+    self.endAngle=ToRad(changedDeg);
 }
 - (void)drawRect:(CGRect)rect
 {
@@ -75,9 +93,7 @@
     self.endAngle=f;
 }
 
--(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
-    [self touchesMoved:touches withEvent:event];
-}
+
 -(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event{
     NSArray *touche = [event.allTouches allObjects];
     CGPoint pointOne = [[touche objectAtIndex:0] locationInView:self];

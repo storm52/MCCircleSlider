@@ -15,9 +15,8 @@
 @property(nonatomic,assign)CGFloat endAngle;
 @property(nonatomic,assign)double min;
 @property(nonatomic,assign)double max;
-@property(nonatomic,readonly)double currentValue;
+@property(nonatomic,assign)double currentValue;
 
 //当作为其他UIView的layer时，需在控制器中实现touch方法，并传递到此方法
--(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event;
 -(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event;
 @end
