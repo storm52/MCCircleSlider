@@ -21,10 +21,6 @@
 
 @synthesize lineWidth=_lineWidth;
 -(instancetype)initWithFrame:(CGRect)frame{
-//    if (CGRectGetHeight(frame)!=CGRectGetWidth(frame)) {
-//        frame.size.width=(MAX(frame.size.width, frame.size.height));
-//        frame.size.height=frame.size.width;
-//    }
     if (self=[super initWithFrame:frame]) {
         self.backgroundColor=[UIColor clearColor];
     }
@@ -48,8 +44,9 @@
     return _lineWidth;
 }
 -(void)setLineWidth:(CGFloat)lineWidth{
-    if (lineWidth>self.bounds.size.width*0.5) {
-        lineWidth=self.bounds.size.width*0.5;
+    CGFloat shortBorder=MIN(CGRectGetHeight(self.frame), CGRectGetWidth(self.frame));
+    if (lineWidth>shortBorder*0.5) {
+        lineWidth=shortBorder*0.5;
     }
     _lineWidth=lineWidth;
 
